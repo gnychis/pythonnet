@@ -49,27 +49,14 @@ def _find_msbuild_tool(tool="msbuild.exe", use_windows_sdk=False):
 
     hreg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
     try:
-        hkey = None
-        for key in keys_to_check:
-            try:
-                hkey = _winreg.OpenKey(hreg, key)
-                break
-            except WindowsError:
-                pass
-
-        if hkey is None:
-            raise RuntimeError("%s could not be found" % sdk_name)
-
-        try:
-            val, type_ = _winreg.QueryValueEx(hkey, value_name)
-            if type_ != _winreg.REG_SZ:
-                raise RuntimeError("%s could not be found" % sdk_name)
- 
-            path = os.path.join(val, tool)
-            if os.path.exists(path):
-                return path
-        finally:
-            hkey.Close()
+        if(tool=="mt.exe"):
+            val = r"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin"
+        if(tool=="msbuild.exe"):
+            val = r"C:\Program Files (x86)\MSBuild\12.0\Bin"
+        path = os.path.join(val, tool)
+        print("Path: " + str(path))
+        if os.path.exists(path):
+            return path
     finally:
         hreg.Close()
 
